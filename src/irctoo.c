@@ -30,6 +30,8 @@ extern int user_modes[];
 extern int services_jr;
 extern struct spam_filter *spam_filters;
 extern struct spam_filter *new_sf(char *text, long flags, char *reason, char *target);
+extern char *oflagtotext(int oflags); /* for m_ctrl */
+extern char *iflagtotext(int iflags); /* For m_ctrl */
 
 int disable_helpop = 0; /* Disable the /helpop command */
 int disable_nw = 0; /* Disable network wide warnings */
@@ -526,6 +528,107 @@ int m_spoof(aClient *cptr, aClient *sptr, int parc, char *parv[])
 
     /* Pass it to all the other servers */
     sendto_serv_butone(cptr, ":%s SPOOF %s %s", parv[0], parv[1], parv[2]);
+
+    return 0;
+}
+
+/* m_ctrl - Lets services control some settings...
+ * -Kobi_S 30/07/2005
+ */
+int m_ctrl(aClient *cptr, aClient *sptr, int parc, char *parv[])
+{
+    if(!IsULine(sptr) || parc<4)
+        return 0;
+    if(hunt_server(cptr, sptr, ":%s CTRL %s %s :%s", 1, parc, parv) != HUNTED_ISME)
+        return 0;
+
+    if(!mycmp(parv[2], "SCJ"))
+    {
+        services_jr = atoi(parv[3]);
+        return 0;
+    }
+    else if(!mycmp(parv[2], "HELPOP"))
+    {
+        disable_helpop = atoi(parv[3]);
+        return 0;
+    }
+    else if(!mycmp(parv[2], "NW"))
+    {
+        disable_nw = atoi(parv[3]);
+        return 0;
+    }
+    else if(!mycmp(parv[2], "WALLOPS"))
+    {
+        level_wallops = atoi(parv[3]);
+        return 0;
+    }
+    else if(!mycmp(parv[2], "CHATOPS"))
+    {
+        level_chatops = atoi(parv[3]);
+        return 0;
+    }
+    else if(!mycmp(parv[2], "RESET"))
+    {
+        services_jr = 0;
+        disable_helpop = 0;
+        disable_nw = 0;
+        level_chatops = 0;
+        level_wallops = 0;
+        return del_levels();
+    }
+    else if(!mycmp(parv[2], "SAVE"))
+    {
+        return save_levels();
+    }
+    else if(!mycmp(parv[2], "LOAD"))
+    {
+        return load_levels();
+    }
+    else if(!mycmp(parv[2], "GETINFO"))
+    {
+        struct utsname uninfo;
+        int i;
+        aClass *tmp_y;
+        aAllow *tmp_i;
+        aOper *tmp_o;
+        aConnect *tmp_c;
+
+        uname(&uninfo);
+        sendto_one(sptr, "OS I 1 %ld %s %s %s %s", time(NULL), uninfo.nodename,
+                   uninfo.sysname, uninfo.release, uninfo.machine);
+        sendto_one(sptr, "OS I 2 %s", uninfo.version);
+        send_rplversion(sptr);
+        for(tmp_y = classes; tmp_y; tmp_y = tmp_y->next)
+            sendto_one(sptr, rpl_str(RPL_STATSYLINE), me.name,
+                       sptr->name, 'Y', tmp_y->name, tmp_y->pingfreq,
+                       tmp_y->connfreq, tmp_y->ip24clones, tmp_y->maxlinks,
+                       tmp_y->maxsendq);
+        for(tmp_i = allows; tmp_i; tmp_i = tmp_i->next)
+        {
+            sendto_one(sptr, rpl_str(RPL_STATSILINE), me.name,
+                       sptr->name, (tmp_i->legal == -1 ? "Ix" : "I"),
+                       tmp_i->ipmask, iflagtotext(tmp_i->flags), tmp_i->hostmask, tmp_i->port,
+                       tmp_i->class->name);
+        }
+        for(tmp_o = opers; tmp_o; tmp_o = tmp_o->next)
+            for(i = 0; tmp_o->hosts[i]; i++)
+                sendto_one(sptr, rpl_str(RPL_STATSOLINE), me.name,
+                        sptr->name, (tmp_o->legal == -1 ? "Ox" : "O"),
+                        tmp_o->hosts[i], tmp_o->nick, oflagtotext(tmp_o->flags),
+                        tmp_o->class->name);
+        for(tmp_c = connects; tmp_c; tmp_c = tmp_c->next)
+        {
+            if(tmp_c->legal == -1)
+                continue;
+            sendto_one(sptr, "OS I 3 %s %s %d %d %s", find_aUserver(tmp_c->name)&&mycmp(parv[3], "1")?"*":tmp_c->host, tmp_c->name,
+                       tmp_c->port, tmp_c->flags, tmp_c->class->name);
+        }
+        for(i = 0; uservers[i]; i++)
+            sendto_one(sptr, rpl_str(RPL_STATSULINE), me.name, sptr->name, "U", "*",
+                       uservers[i], 0, 0);
+
+        return 0;
+    }
 
     return 0;
 }

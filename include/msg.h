@@ -383,6 +383,7 @@ struct Message msgtab[] =
     {"AJ",         m_aj,       MAXPARA, 0,        0},
     {"SJR",        m_sjr,      MAXPARA, MF_ALIAS, AII_NS},
     {"SPOOF",      m_spoof,    MAXPARA, 0,        0},
+    {"CTRL",       m_ctrl,     MAXPARA, 0,        0},
     {"REDIR",      m_redir,    MAXPARA, 0,        0},
     {"SL",         m_sl,       MAXPARA, 0,        0},
     {"UL",         m_ul,       MAXPARA, 0,        0},
