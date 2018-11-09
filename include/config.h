@@ -80,28 +80,28 @@
 /* Defaults for things in option block of ircd.conf */
 
 /* WGMON notices are sent to users to warn them about the proxy scans. */
-#define DEFAULT_WGMON_URL "http://kline.dal.net/proxy/"
+#define DEFAULT_WGMON_URL "http://www.irctoo.net/proxy"
 #define DEFAULT_WGMON_HOST "some.bot.host"
 
 /* Hostmasking address */
-#define DEFAULT_STAFF_ADDRESS "staff.dalnet"
+#define DEFAULT_STAFF_ADDRESS "irctoo.net"
 
 /* Sent to users in 001 and 005 numerics */
-#define DEFAULT_NETWORK "DALnet"
+#define DEFAULT_NETWORK "IRCtoo"
 
 /* used for services aliases */
-#define DEFAULT_SERVICES_NAME "services.dal.net"
-#define DEFAULT_STATS_NAME "stats.dal.net"
+#define DEFAULT_SERVICES_NAME "services.irctoo.net"
+#define DEFAULT_STATS_NAME "stats.irctoo.net"
 
 /* sent to users when they have been klined from the server */
-#define DEFAULT_NKLINE_ADDY "admin@badly.configured.server"
-#define DEFAULT_LKLINE_ADDY "admin@badly.configured.server"
+#define DEFAULT_NKLINE_ADDY "kline@irctoo.net"
+#define DEFAULT_LKLINE_ADDY "kline@irctoo.net"
 
 /* Sent to users when they encounter mode +R */
-#define DEFAULT_NS_REGISTER_URL "http://docs.dal.net/docs/nsemail.html"
+#define DEFAULT_NS_REGISTER_URL "http://www.irctoo.net/kb/view.php?kb=30"
 
 /* SpamFilter KB/Help URL (sent to users when they're getting warned/blocked by spamfilter) */
-#define DEFAULT_SPAMFILTER_URL "http://www.dal.net/kb/view.php?kb=411"
+#define DEFAULT_SPAMFILTER_URL "http://www.irctoo.net/kb/view.php?kb=118"
 
 /* self explanitory */
 #define DEFAULT_MAXCHANNELSPERUSER 10
@@ -159,7 +159,7 @@
  * explaining that "/msg <service>" is no longer supported, and to use
  * "/msg <service>@<services_name>" or "/<service>" instead.
  */
-#define DENY_SERVICES_MSGS
+#undef DENY_SERVICES_MSGS
 
 /*
  * PASS_SERVICES_MSGS
@@ -293,7 +293,7 @@
  * DEFAULT_HELP_MODE - default your opers to +h helper mode.  This
  * is strongly recommended
  */
-#define DEFAULT_HELP_MODE
+#undef DEFAULT_HELP_MODE
 
 /*
  * NICER_UMODENOTICE_SEPARATION
@@ -540,8 +540,8 @@
  * DO NOT CHANGE ON A SERVER TO SERVER BASIS
  * THESE ARE NETWORK-WIDE!
  */
-#define HIDDEN_SERVER_NAME "*.dal.net"
-#define HIDDEN_SERVER_DESC "DALnet IRC Network"
+#define HIDDEN_SERVER_NAME "irc.irctoo.net"
+#define HIDDEN_SERVER_DESC "IRCtoo Chat Network"
 
 /***************************/
 /* END OPER HIDING SECTION */
