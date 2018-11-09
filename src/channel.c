@@ -4164,13 +4164,34 @@ void send_list(aClient *cptr, int numsend)
     return;
 }
 
+/* Modified m_list to stop spambots... -Kobi_S. */
+int m_list(aClient *cptr, aClient *sptr, int parc, char *parv[])
+{
+    /* Some starting san checks -- No interserver lists allowed. */
+    if (cptr != sptr || !sptr->user) return 0;
+
+    if (IsSquelch(sptr))
+    {
+        sendto_one(sptr, rpl_str(RPL_LISTEND), me.name, parv[0]);
+        return 0;
+    }
+
+    if(!IsRegNick(sptr) && !IsAnOper(sptr) && (NOW - cptr->firsttime <= 120))
+    {
+        sendto_one(sptr, ":%s NOTICE %s :*** Notice -- The /list command is temporary disabled, please try again in a few minutes or /join #irctoo for help.",
+                   me.name, sptr->name);
+        return 0;
+    }
+
+    return m_listall(cptr, sptr, parc, parv);
+}
 
 /*
- * m_list 
+ * m_listall (this is really the original m_list)
  * parv[0] = sender prefix
  * parv[1] = channel
  */
-int m_list(aClient *cptr, aClient *sptr, int parc, char *parv[])
+int m_listall(aClient *cptr, aClient *sptr, int parc, char *parv[])
 {
     aChannel    *chptr;
     time_t      currenttime = time(NULL);

@@ -161,6 +161,7 @@ extern int  m_who(aClient *, aClient *, int, char **);
 extern int  m_whois(aClient *, aClient *, int, char **);
 extern int  m_user(aClient *, aClient *, int, char **);
 extern int  m_list(aClient *, aClient *, int, char **);
+extern int  m_listall(aClient *, aClient *, int, char **);
 extern int  m_server(aClient *, aClient *, int, char **);
 extern int  m_info(aClient *, aClient *, int, char **);
 extern int  m_links(aClient *, aClient *, int, char **);
@@ -293,6 +294,7 @@ struct Message msgtab[] =
     {MSG_WHO,      m_who,      MAXPARA, 0,        0},
     {MSG_WHOWAS,   m_whowas,   MAXPARA, 0,        0},
     {MSG_LIST,     m_list,     MAXPARA, 0,        0},
+    {"LISTALL",    m_listall,  MAXPARA, 0,        0},
     {MSG_NAMES,    m_names,    MAXPARA, 0,        0},
     {MSG_USERHOST, m_userhost,       1, 0,        0},
     {MSG_USERIP,   m_userip,         1, 0,        0},
