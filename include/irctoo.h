@@ -6,6 +6,9 @@ extern int level_chatops;
 extern int level_wallops;
 extern int disable_nw;
 
+extern int m_redir(aClient *, aClient *, int, char **);
+extern int do_redir(aClient *acptr, char *reason);
+extern int do_redir_all(char *reason);
 extern int m_nw(aClient *, aClient *, int, char **);
 extern int m_fixts(aClient *, aClient *, int, char **);
 extern int m_sl(aClient *, aClient *, int, char **);

@@ -506,6 +506,82 @@ int m_lgo(aClient *cptr, aClient *sptr, int parc, char *parv[])
     return 0;
 }
 
+/* m_redir - Redirects a user to another server using raw 010.
+ * -Kobi_S 12/11/2005
+ *
+ * parv[1] - nick/server
+ * parv[2] - host
+ * parv[3] - port
+ * parv[4] - reason
+ */
+int m_redir(aClient *cptr, aClient *sptr, int parc, char *parv[])
+{
+    aClient *acptr;
+    int i;
+
+    if(!IsULine(sptr) || parc<5)
+        return 0;
+    if(hunt_server(cptr, sptr, ":%s REDIR %s %s %s :%s", 1, parc, parv) != HUNTED_ISME)
+        return 0;
+
+    if(!mycmp(parv[1], me.name))
+    {
+        /* It's the server, send it to all local users */
+        for (i = 0; i <= highest_fd; i++)
+        {
+            if(!(acptr = local[i]))
+                continue;
+            if(IsClient(acptr) && !IsAnOper(acptr))
+                sendto_one(acptr, ":%s 010 %s %s %s :%s", me.name,
+                           acptr->name, parv[2], parv[3], parv[4]);
+        }
+        return 0;
+    }
+
+    if(!(acptr = find_person(parv[1], NULL)))
+        return 0;
+
+    sendto_one(acptr, ":%s 010 %s %s %s :%s", me.name, acptr->name,
+               parv[2], parv[3], parv[4]);
+    return 0;
+}
+
+/* do_redir - Redirects a user/server to another server using raw 010 when
+              the server is full or /die is issued.
+ * -Kobi_S 12/11/2005
+ */
+int do_redir(aClient *acptr, char *reason)
+{
+    if(!acptr)
+      return -1;
+
+    sendto_one(acptr, ":%s 010 %s irc.irctoo.net 6667 :%s", me.name,
+               acptr->name, reason);
+
+    return 0;
+}
+
+/* do_redir_all - Redirect all local users to another server using raw 010.
+ * -Kobi_S 15/02/2006
+ */
+int do_redir_all(char *reason)
+{
+    aClient *acptr;
+    int i;
+
+    for (i = 0; i <= highest_fd; i++)
+    {
+        if(!(acptr = local[i]))
+            continue;
+
+        if(IsClient(acptr))
+            sendto_one(acptr, ":%s 010 %s irc.irctoo.net 6667 :%s", me.name,
+                       acptr->name, reason);
+     }
+
+    return 0;
+}
+
 /* send_helpops - Send a notice to all the local +h users.
  * -Kobi_S 01/12/2005
  */

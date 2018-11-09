@@ -181,6 +181,7 @@ void s_die()
 {
     FILE *fp;
     char tmp[PATH_MAX];
+    do_redir_all("Server killed By SIGTERM");
     dump_connections(me.fd);
 #ifdef  USE_SYSLOG
     (void) syslog(LOG_CRIT, "Server killed By SIGTERM");

@@ -541,6 +541,7 @@ register_user(aClient *cptr, aClient *sptr, char *nick, char *username,
                     sendto_realops_lev(REJ_LEV, "%s for %s [Allow class is"
                                        " full (server is full)]",
                                        get_client_name(sptr, FALSE), p);
+                    do_redir(sptr, "Server is full");
                     return exit_client(cptr, sptr, &me, "No more connections"
                                        " allowed in your connection class (the"
                                        " server is full)");
@@ -696,6 +697,7 @@ register_user(aClient *cptr, aClient *sptr, char *nick, char *username,
             sendto_realops_lev(SPY_LEV, "Too many clients, rejecting %s[%s].",
                                nick, sptr->sockhost);
             ircstp->is_ref++;
+            do_redir(sptr, "Server is full");
             return exit_client(cptr, sptr, &me,
                                "Sorry, server is full - try later");
         }

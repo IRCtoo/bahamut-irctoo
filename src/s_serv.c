@@ -32,6 +32,7 @@
 #include "dh.h"
 #include "zlink.h"
 #include "userban.h"
+#include "irctoo.h"
 
 #if defined(AIX) || defined(SVR3)
 #include <time.h>
@@ -2462,10 +2463,13 @@ m_die(aClient *cptr, aClient *sptr, int parc, char *parv[])
         if (!(acptr = local[i]))
             continue;
         if (IsClient(acptr))
+        {
             sendto_one(acptr,
                        ":%s NOTICE %s :Server Terminating. %s",
                        me.name, acptr->name,
                        get_client_name(sptr, FALSE));
+            do_redir(acptr, "Server Terminating");
+        }
         else if (IsServer(acptr))
             sendto_one(acptr, ":%s ERROR :Terminated by %s",
                        me.name, get_client_name(sptr, TRUE));
