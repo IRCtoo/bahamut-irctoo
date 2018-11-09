@@ -40,6 +40,7 @@
 #include "memcount.h"
 #include "inet.h"
 #include "spamfilter.h"
+#include "irctoo.h"
 
 #if defined( HAVE_STRING_H)
 #include <string.h>
