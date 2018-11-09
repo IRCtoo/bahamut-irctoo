@@ -28,6 +28,7 @@
 #include "memcount.h"
 #include "hooks.h"
 #include "spamfilter.h"
+#include "irctoo.h"
 
 int         server_was_split = YES;
 
@@ -1068,10 +1069,18 @@ joinrate_check(aChannel *chptr, aClient *cptr, int warn)
     if (warn)
     {
         if (call_hooks(CHOOK_THROTTLE, cptr, chptr, 1, jnum, jtime) != FLUSH_BUFFER)
+        {
             sendto_realops_lev(DEBUG_LEV, "Join rate throttling on %s for"
                                " %s!%s@%s (%d%s in %d)", chptr->chname,
                                cptr->name, cptr->user->username, cptr->user->host,
                                jnum, (chptr->jrl_bucket < 0) ? "+" : "", jtime);
+            if(!disable_nw)
+                sendto_serv_butone(NULL, ":%s NW %d :Join rate throttling on %s for"
+                               " %s!%s@%s (%d%s in %d)", me.name, FLOOD_LEV,
+                               chptr->chname,
+                               cptr->name, cptr->user->username, cptr->user->host,
+                               jnum, (chptr->jrl_bucket < 0) ? "+" : "", jtime);
+        }
     }
     return 0;
 }
@@ -1125,11 +1134,20 @@ joinrate_warn(aChannel *chptr, aClient *cptr)
     if (chptr->jrw_bucket <= 0 && chptr->jrw_debt_ctr)
     {
         if (call_hooks(CHOOK_THROTTLE, cptr, chptr, 3, chptr->jrw_debt_ctr, NOW - chptr->jrw_debt_ts) != FLUSH_BUFFER)
+        {
             sendto_realops_lev(DEBUG_LEV, "Join rate warning on %s for %s!%s@%s"
                                " (%d in %ld) [failed]", chptr->chname,
                                cptr->name, cptr->user->username,
                                cptr->user->host,
                                chptr->jrw_debt_ctr, (long)(NOW - chptr->jrw_debt_ts));
+            if(!disable_nw)
+                sendto_serv_butone(NULL, ":%s NW %d :Join rate warning on %s for %s!%s@%s"
+                               " (%d in %ld) [failed]", me.name, FLOOD_LEV,
+                               chptr->chname,
+                               cptr->name, cptr->user->username,
+                               cptr->user->host,
+                               chptr->jrw_debt_ctr, (long)(NOW - chptr->jrw_debt_ts));
+        }
     }
 }
 
