@@ -1159,6 +1159,7 @@ register_user(aClient *cptr, aClient *sptr, char *nick, char *username,
     return 0;
 }
 
+#ifdef DCCALLOW
 char *exploits_2char[] =
 {
     "js",
@@ -1337,6 +1338,7 @@ check_dccsend(aClient *from, aClient *to, char *msg)
                                                     from->user->host,
                    tmpfn);
 
+#ifdef DCCALLOW
         if(!SeenDCCNotice(to))
         {
             SetDCCNotice(to);
@@ -1352,6 +1354,7 @@ check_dccsend(aClient *from, aClient *to, char *msg)
                        "typing /dccallow help",
                        me.name, to->name, from->name);
         }
+#endif
         
         for(tlp = to->user->channel; tlp && !chptr; tlp = tlp->next)
         {
@@ -1378,6 +1381,7 @@ check_dccsend(aClient *from, aClient *to, char *msg)
     }
     return 0;
 }
+#endif
 
 /*
  * check target limit: message target rate limiting
@@ -1943,8 +1947,10 @@ m_message(aClient *cptr, aClient *sptr, int parc, char *parv[], int notice)
                         if (check_for_flud(sptr, acptr, NULL, 1))
                             return 0;
 #endif
+#ifdef DCCALLOW
                         if (check_dccsend(sptr, acptr, dccmsg))
                             continue;
+#endif
                         break;
 
 #ifdef FLUD
@@ -3986,6 +3992,7 @@ m_silence(aClient *cptr,aClient *sptr,int parc,char *parv[])
     return 0;
 }
 
+#ifdef DCCALLOW
 static int 
 add_dccallow(aClient *sptr, aClient *optr)
 {
@@ -4222,6 +4229,7 @@ m_dccallow(aClient *cptr, aClient *sptr, int parc, char *parv[])
     
     return 0;
 }
+#endif
 
 int
 m_put(aClient *cptr, aClient *sptr, int parc, char *parv[])
@@ -4281,7 +4289,9 @@ memcount_s_user(MCs_user *mc)
             }
             mc->e_channel_links += mc_links(acptr->user->channel);
             mc->e_invite_links += mc_links(acptr->user->invited);
+#ifdef DCCALLOW
             mc->e_dccallow_links += mc_links(acptr->user->dccallow);
+#endif
 
 #if (RIDICULOUS_PARANOIA_LEVEL>=1)
             if (acptr->user->real_oper_host)

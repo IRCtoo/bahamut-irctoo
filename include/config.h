@@ -565,6 +565,12 @@
 #define EXEMPT_LISTS
 #define INVITE_LISTS
 
+/* DCCALLOW
+ * Enable the DCCALLOW system. Has been included, but now you can
+ * disable it! :)
+ */
+#undef DCCALLOW
+
 /*
  * USE_SSL - Add SSL support for users
  */

@@ -36,7 +36,9 @@ extern int do_user(char *, aClient *, aClient *, char *, char *, char *,
 		   unsigned long, char *, char *);
 
 extern int register_user(aClient *, aClient *, char *, char *, char *);
+#ifdef DCCALLOW
 extern int del_dccallow(aClient *, aClient *, int);
+#endif
 
 extern int is_xflags_exempted(aClient *sptr, aChannel *chptr);
 extern int verbose_to_relaychan(aClient *sptr, aChannel *chptr, char *cmd, char *reason);
@@ -96,7 +98,10 @@ int m_nick(aClient *cptr, aClient *sptr, int parc, char *parv[])
 {
     struct simBan *ban;
     aClient    *acptr, *uplink;
-    Link       *lp, *lp2;
+    Link       *lp;
+#ifdef DCCALLOW
+    Link       *lp2;
+#endif
     char        nick[NICKLEN + 2];
     ts_val      newts = 0;
     int         sameuser = 0, samenick = 0;
@@ -597,6 +602,7 @@ int m_nick(aClient *cptr, aClient *sptr, int parc, char *parv[])
 	     */
 	    flush_user_banserial(sptr);
 	}
+#ifdef DCCALLOW
         /* Remove dccallow entries for users who don't share common channel(s) unless they only change their nick capitalization -Kobi_S */
         if(sptr->user && mycmp(parv[0], nick))
         {
@@ -614,6 +620,7 @@ int m_nick(aClient *cptr, aClient *sptr, int parc, char *parv[])
                 }
             }
         }
+#endif
     } 
     else
     {

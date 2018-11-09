@@ -279,6 +279,7 @@ my_name_for_link(char *name, aConnect *aconn)
     return namebuf;
 }
 
+#ifdef DCCALLOW
 int remove_dcc_references(aClient *sptr)
 {  
     aClient *acptr;
@@ -322,6 +323,7 @@ int remove_dcc_references(aClient *sptr)
     }
     return 0;
 }  
+#endif
 
 /*
  * NOQUIT
@@ -369,7 +371,9 @@ exit_one_client_in_split(aClient *cptr, aClient *dead, char *reason)
     probability_remove(cptr);
 #endif
 
+#ifdef DCCALLOW
     remove_dcc_references(cptr);
+#endif
 
     del_from_client_hash_table(cptr->name, cptr); 
 
@@ -775,7 +779,9 @@ exit_one_client(aClient *cptr, aClient *sptr, aClient *from, char *comment)
             /* Clean up silences */
             while ((lp = sptr->user->silence)) 
                 del_silence(sptr, lp->value.cp);
+#ifdef DCCALLOW
             remove_dcc_references(sptr);
+#endif
             /* again, this is all that is needed */
         }
     }

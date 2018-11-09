@@ -346,7 +346,9 @@ typedef struct {
     int e_watch_links;
     int e_invite_links;
     int e_silence_links;
+#ifdef DCCALLOW
     int e_dccallow_links;
+#endif
 #ifdef HAVE_ENCRYPTION_ON
     int e_dh_sessions;
     int e_rc4states;

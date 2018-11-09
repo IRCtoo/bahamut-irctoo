@@ -144,11 +144,13 @@ typedef struct SServicesTag ServicesTag;
 #define        MAXSILES        10
 #define        MAXSILELENGTH   128
 
+#ifdef DCCALLOW
 #define MAXDCCALLOW 5
 #define DCC_LINK_ME	0x01	/* This is my dcc allow */
 #define DCC_LINK_REMOTE 0x02    /* I need to remove these dcc allows from
 				 * these clients when I die
 				 */
+#endif
 
 #define	USERHOST_REPLYLEN	(NICKLEN+HOSTLEN+USERLEN+5)
 
@@ -864,7 +866,9 @@ struct User
      */
     Link       *silence;      /* chain of silenced users */
     LOpts 	   *lopt;     /* Saved /list options */
+#ifdef DCCALLOW
     Link       *dccallow;     /* chain of dcc send allowed users */
+#endif
 #if (RIDICULOUS_PARANOIA_LEVEL>=1)
     char       *real_oper_host;
     char       *real_oper_username;

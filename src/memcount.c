@@ -350,11 +350,13 @@ void report_memory_usage(aClient *cptr, int detail)
                    mc_s_user.e_silence_links,
                    mc_s_user.e_silence_links * mcbh_links.objsize);
     subtotal += mc_s_user.e_silence_links * mcbh_links.objsize;
+#ifdef DCCALLOW
     if (detail && mc_s_user.e_dccallow_links)
         sendto_one(cptr, "%s    dccallow links: %d (%lu bytes)", pfxbuf,
                    mc_s_user.e_dccallow_links,
                    mc_s_user.e_dccallow_links * mcbh_links.objsize);
     subtotal += mc_s_user.e_dccallow_links * mcbh_links.objsize;
+#endif
     if (detail && mc_s_user.e_watch_links)
         sendto_one(cptr, "%s    client-watch links: %d (%lu bytes)", pfxbuf,
                    mc_s_user.e_watch_links,
@@ -391,7 +393,9 @@ void report_memory_usage(aClient *cptr, int detail)
     mcbh_links.knownobjs += mc_s_user.e_channel_links;
     mcbh_links.knownobjs += mc_s_user.e_invite_links;
     mcbh_links.knownobjs += mc_s_user.e_silence_links;
+#ifdef DCCALLOW
     mcbh_links.knownobjs += mc_s_user.e_dccallow_links;
+#endif
     mcbh_links.knownobjs += mc_s_user.e_watch_links;
     mcbh_links.knownobjs += mc_hash.e_links;
     mcbh_dlinks.knownobjs += mc_clientlist.e_oper_dlinks;

@@ -213,7 +213,9 @@ extern int  m_watch(aClient *, aClient *, int, char **);
 extern int  m_sqline(aClient *, aClient *, int, char **);
 extern int  m_unsqline(aClient *, aClient *, int, char **);
 extern int  m_burst(aClient *, aClient *, int, char **);
+#ifdef DCCALLOW
 extern int  m_dccallow(aClient *, aClient *, int, char **);
+#endif
 extern int  m_sgline(aClient *, aClient *, int, char **);
 extern int  m_unsgline(aClient *, aClient *, int, char **);
 extern int  m_dkey(aClient *, aClient *, int, char **);
@@ -341,7 +343,9 @@ struct Message msgtab[] =
     {MSG_NBANRESET,m_nbanreset,      1, 0,        0},
     {MSG_SILENCE,  m_silence,  MAXPARA, 0,        0},
     {MSG_WATCH,    m_watch,          1, 0,        0},
+#ifdef DCCALLOW
     {MSG_DCCALLOW, m_dccallow,       1, 0,        0},
+#endif
     {MSG_SQLINE,   m_sqline,   MAXPARA, 0,        0},
     {MSG_UNSQLINE, m_unsqline, MAXPARA, 0,        0},
     {MSG_CAPAB,    m_capab,    MAXPARA, MF_UNREG, 0},
