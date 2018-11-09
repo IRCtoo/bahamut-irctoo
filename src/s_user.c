@@ -2233,9 +2233,14 @@ m_whois(aClient *cptr, aClient *sptr, int parc, char *parv[])
             strcat(buf, " - Services Administrator");
         /* We don't go through the services tag list here by design, only the first services tag entry
            may change RPL_WHOISOPERATOR -Kobi_S. */
-        if (buf[0] && (!acptr->user->servicestag || acptr->user->servicestag->raw!=RPL_WHOISOPERATOR))
+        if (buf[0] && (!user->level || user->level->raw!=313 || IsAdmin(acptr)) && (!acptr->user->servicestag || acptr->user->servicestag->raw!=RPL_WHOISOPERATOR))
             sendto_one(sptr, rpl_str(RPL_WHOISOPERATOR), me.name, parv[0], 
                        name, buf);
+
+        if(user->level && user->level->raw && user->level->title)
+            sendto_one(sptr, ":%s %u %s %s :%s", me.name,
+                       user->level->raw==313&&IsAdmin(acptr)?309:user->level->raw,
+                       parv[0], name, user->level->title);
 
         if(acptr->user->servicestag)
         {
@@ -2271,7 +2276,7 @@ m_whois(aClient *cptr, aClient *sptr, int parc, char *parv[])
                 buf2[0] = '+';
                 buf2[1] = '\0';
             }
-            sendto_one(sptr, rpl_str(RPL_WHOISMODES), me.name, parv[0], name, buf2);
+            sendto_one(sptr, rpl_str(RPL_WHOISMODES), me.name, parv[0], name, buf2, user->level?user->level->level:0);
         }
 
         /* don't give away that this oper is on this server if they're hidden! */
@@ -2374,6 +2379,9 @@ do_user(char *nick, aClient *cptr, aClient *sptr, char *username, char *host,
 #ifdef NO_USER_OPERKILLS
         sptr->umode &= ~UMODE_s;
 #endif
+        if(level_wallops)
+            sptr->umode &= ~UMODE_w;
+
         strncpyzt(user->host, host, sizeof(user->host));
 #ifdef USER_HOSTMASKING
         if(uhm_type > 0) sptr->umode |= UMODE_H;
@@ -3451,6 +3459,8 @@ m_umode(aClient *cptr, aClient *sptr, int parc, char *parv[])
 #ifdef NO_USER_OPERKILLS
         sptr->umode &= ~UMODE_s;
 #endif
+        if(level_wallops && (!sptr->user->level || (sptr->user->level->level < level_wallops)))
+            sptr->umode &= ~UMODE_w;
     }
     if(MyClient(sptr))
     {

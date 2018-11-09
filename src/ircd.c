@@ -49,6 +49,7 @@
 #include "memcount.h"
 #include "libcrypto-compat.h"
 #include "spamfilter.h"
+#include "irctoo.h"
 
 aMotd      *motd;
 aMotd      *helpfile;           /* misnomer, aMotd could be generalized */
@@ -898,9 +899,10 @@ main(int argc, char *argv[])
     R_fail_id = strlen(REPORT_FAIL_ID);
         
     NOW = time(NULL);
-        
+      
+    load_levels(); /* Load user levels */  
 #ifdef SPAMFILTER
-    load_spamfilter();
+    //load_spamfilter(); /* load_levels() will take care of it */
 #endif
 
 #ifdef USE_SSL

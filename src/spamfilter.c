@@ -455,10 +455,13 @@ int m_sf(aClient *cptr, aClient *sptr, int parc, char *parv[])
     else
         sendto_serv_butone(cptr, ":%s SF %s %s", parv[0], parv[1], parv[2]);
 
+#if 0
+    /* save_levels() will take care of this */
     if(NOW > last_spamfilter_save + 300) {
       last_spamfilter_save = NOW;
       save_spamfilter();
     }
+#endif
 
     return 0;
 }

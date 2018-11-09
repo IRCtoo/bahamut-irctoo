@@ -26,6 +26,7 @@
 #include "zlink.h"
 #include "throttle.h"
 #include "clones.h"
+#include "irctoo.h"
 
 /* externally defined functions */
 
@@ -70,6 +71,8 @@ static void sendnick_TS(aClient *cptr, aClient *acptr)
 			   (acptr->ip_family == AF_INET) ?
 			   htonl(acptr->ip.ip4.s_addr) : 1, acptr->info);
 	}
+        if(acptr->user->level)
+            sendto_one(cptr, "SL %s 0 %u", acptr->name, acptr->user->level->level);
         for(servicestag = acptr->user->servicestag; servicestag; servicestag = servicestag->next)
         {
             ubuf[0] = '+';

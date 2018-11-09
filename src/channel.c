@@ -3253,7 +3253,7 @@ int m_join(aClient *cptr, aClient *sptr, int parc, char *parv[])
                 && !(confopts & FLAGS_SPLITOPOK))
                     allow_op = NO;
             
-            if ((sptr->user->joined >= maxchannelsperuser) &&
+            if ((sptr->user->joined >= ((sptr->user->level&&sptr->user->level->maxchannels)?sptr->user->level->maxchannels:maxchannelsperuser)) &&
                 (!IsAnOper(sptr) || (sptr->user->joined >= 
                                      maxchannelsperuser * 3)))
             {

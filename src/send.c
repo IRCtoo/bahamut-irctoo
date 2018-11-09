@@ -183,7 +183,7 @@ static int send_message(aClient *to, char *msg, int len, void* sbuf)
     if (IsDead(to))
         return 0;
 
-    if (to->class && (SBufLength(&to->sendQ) > to->class->maxsendq))
+    if (to->class && (SBufLength(&to->sendQ) > ((to->user&&to->user->level)?to->user->level->sendq_new?to->user->level->sendq_new:to->class->maxsendq+to->user->level->sendq_plus:to->class->maxsendq)))
     {
         /* this would be a duplicate notice, but it contains some useful 
          * information thatwould be spamming the rest of the network.
@@ -192,7 +192,7 @@ static int send_message(aClient *to, char *msg, int len, void* sbuf)
         if (IsServer(to)) 
             sendto_ops("Max SendQ limit exceeded for %s: %d > %ld",
                        get_client_name(to, HIDEME), SBufLength(&to->sendQ),
-                       to->class->maxsendq);
+                       (to->user&&to->user->level)?to->user->level->sendq_new?to->user->level->sendq_new:to->class->maxsendq+to->user->level->sendq_plus:to->class->maxsendq);
         to->flags |= FLAGS_SENDQEX;
         return dead_link(to, "Max Sendq exceeded for %s, closing link", 0);
     }

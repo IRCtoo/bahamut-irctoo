@@ -568,6 +568,20 @@ typedef struct SServicesTag ServicesTag;
 #define	CURSES_TERM	1
 #define	TERMCAP_TERM	2
 
+/* User levels -Kobi_S 12/11/2005 */
+struct user_level
+{
+    struct user_level *next;
+    unsigned int level;
+    char *title;
+    int sendq_new;
+    int recvq_new;
+    int sendq_plus;
+    int recvq_plus;
+    int maxchannels;
+    unsigned int raw;
+};
+
 struct Counter 
 {
     int         server;      /* servers */
@@ -857,6 +871,7 @@ struct User
     unsigned int servicetype;  /* set by SVSMODE +T */
     unsigned long servicestamp; /* set by SVSMODE +d */
     ServicesTag *servicestag;  /* set by SVSTAG */
+    struct user_level *level;  /* User level */
     AliasInfo  *alias;         /* shortform alias data for U:lined clients */
     /*
      * In a perfect world the 'server' name should not be needed, a
