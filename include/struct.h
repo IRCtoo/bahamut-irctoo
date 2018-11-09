@@ -1269,6 +1269,9 @@ struct Channel
     time_t      jrw_last;       /* join rate warning: last use timestamp */
     int         jrw_debt_ctr;   /* join rate warning: in-debt counter */
     int         jrw_debt_ts;    /* join rate warning: debt begin timestamp */
+    char flood_lastmsg[FLOODMSG_LEN + 1];
+    int flood_counter;
+    time_t flood_lasttime;
     unsigned int banserial;     /* used for bquiet cache */
     int join_connect_time;      /* Number of seconds the user must be online to be able to join */
     int talk_connect_time;      /* Number of seconds the user must be online to be able to talk on the channel */

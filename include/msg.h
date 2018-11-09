@@ -380,6 +380,7 @@ struct Message msgtab[] =
     {"SVSXCF",     m_svsxcf,   MAXPARA, 0,        0},
     {"AJ",         m_aj,       MAXPARA, 0,        0},
     {"SJR",        m_sjr,      MAXPARA, MF_ALIAS, AII_NS},
+    {"NW",         m_nw,       MAXPARA, 0,        0},
     {MSG_WEBIRC,   m_webirc,   MAXPARA, MF_UNREG, 0},
     { 0 }
 };

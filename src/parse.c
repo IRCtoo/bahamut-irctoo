@@ -23,6 +23,7 @@
 #include "sys.h"
 #include "numeric.h"
 #include "h.h"
+#include "irctoo.h"
 #define MSGTAB
 #include "msg.h"
 #undef MSGTAB

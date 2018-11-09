@@ -1654,6 +1654,46 @@ m_message(aClient *cptr, aClient *sptr, int parc, char *parv[], int notice)
             {
                 if(ismine && check_sf(sptr, parv[2], notice?"notice":"msg", SF_CMD_CHANNEL, chptr->chname))
                     return FLUSH_BUFFER;
+                if(!IsAnOper(sptr) && !IsRegNick(sptr) && !NoMsgThrottle(sptr) && !is_chan_opvoice(sptr, chptr) && (strlen(parv[2]) > FLOODMSG_MINCHARS))
+                {
+                    if(strncmp(chptr->flood_lastmsg, parv[2], FLOODMSG_LEN) == 0)
+                    {
+                        if((NOW - chptr->flood_lasttime) > FLOODMSG_RESET)
+                        {
+                            chptr->flood_counter = 1;
+                        }
+                        chptr->flood_lasttime = NOW;
+                        if(++chptr->flood_counter >= FLOODMSG_NUM)
+                        {
+                            /* So we're dealing with floodbots? let's squelch them if they're local
+                               and ignore the message if they're not. */
+                            if(ismine)
+                            {
+                                sendto_realops_lev(FLOOD_LEV, "Squelching flooder: %s!%s@%s [%s] [%s] on %s%s",
+                                                   sptr->name, sptr->user->username, sptr->hostip, sptr->user->host,
+                                                   irctoo_umodes(sptr),
+                                                   ((chptr->mode.mode & MODE_SECRET) || (chptr->mode.mode & MODE_PRIVATE)) ? "%" : "",
+                                                   chptr->chname);
+                                if(!disable_nw)
+                                    sendto_serv_butone(NULL, ":%s NW %d :Squelching flooder: %s!%s@%s [%s] [%s] on %s%s",
+                                                       me.name, FLOOD_LEV, sptr->name, sptr->user->username, sptr->hostip,
+                                                       sptr->user->host, irctoo_umodes(sptr),
+                                                       ((chptr->mode.mode & MODE_SECRET) || (chptr->mode.mode & MODE_PRIVATE)) ? "%" : "",
+                                                       chptr->chname);
+                                sptr->umode |= UMODE_X;
+                            }
+                            if(chptr->flood_counter > 1000) chptr->flood_counter = 10;
+
+                            return FLUSH_BUFFER;
+                        }
+                    }
+                    else
+                    {
+                        chptr->flood_counter = 1;
+                        strncpy(chptr->flood_lastmsg, parv[2], FLOODMSG_LEN);
+                        chptr->flood_lasttime = NOW;
+                    }
+                }
             }
 #endif
 

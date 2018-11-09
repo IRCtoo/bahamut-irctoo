@@ -861,6 +861,11 @@
  * -wd */
 #define DONT_CHECK_QLINE_REMOTE
 
+#define FLOODMSG_LEN 250     /* Maximum length of flood message to save/check */
+#define FLOODMSG_NUM 4       /* Number of repeats to start blocking */
+#define FLOODMSG_RESET 30    /* Number of seconds before resetting the count (since last flood message) */
+#define FLOODMSG_MINCHARS 10 /* Minimum number of chars needed in a message that could be flood message */
+
 /* USER_HOSTMASKING is used to enable host-masking for users.
  * If you are connected to the main DALnet network, you should not
  * have this enabled yet.
