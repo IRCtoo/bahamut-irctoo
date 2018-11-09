@@ -38,6 +38,27 @@ int m_nw(aClient *cptr, aClient *sptr, int parc, char *parv[])
     return 0;
 }
 
+/* m_fixts - Changes a channel's TS
+ * -Kobi_S 21/04/2007
+ * parv[1] - channel
+ * parv[2] - newts
+ */
+int m_fixts(aClient *cptr, aClient *sptr, int parc, char *parv[])
+{
+    aChannel *chptr;
+
+    if(!IsULine(sptr) || (parc<3))
+        return 0;
+
+    if(!(chptr = find_channel(parv[1], NULL)))
+        return 0;
+
+    chptr->channelts = atol(parv[2]);
+    sendto_serv_butone(cptr, ":%s FIXTS %s %s", parv[0], parv[1], parv[2]);
+
+    return 0;
+}
+
 char *irctoo_umodes(aClient *cptr)
 {
     static char umodes[255];
