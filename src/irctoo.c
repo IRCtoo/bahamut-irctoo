@@ -506,6 +506,30 @@ int m_lgo(aClient *cptr, aClient *sptr, int parc, char *parv[])
     return 0;
 }
 
+/* m_spoof - Lets services change a user's host.
+ * -Kobi_S 20/07/2005
+ */
+int m_spoof(aClient *cptr, aClient *sptr, int parc, char *parv[])
+{
+    aClient *acptr;
+
+    if(!IsULine(sptr) || parc<3 || *parv[2]==0)
+        return 0; /* Not u:lined client or not enough parameters */
+
+    if(!(acptr = find_person(parv[1], NULL)))
+        return 0; /* Target user doesn't exist */
+
+    if(strlen(parv[2]) > HOSTLEN)
+        return 0; /* The requested host is too long */
+
+    strcpy(acptr->user->host, parv[2]); /* Set the requested (masked) host */
+
+    /* Pass it to all the other servers */
+    sendto_serv_butone(cptr, ":%s SPOOF %s %s", parv[0], parv[1], parv[2]);
+
+    return 0;
+}
+
 /* m_redir - Redirects a user to another server using raw 010.
  * -Kobi_S 12/11/2005
  *
