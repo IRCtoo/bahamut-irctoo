@@ -17,4 +17,5 @@ extern int load_levels();
 extern int del_levels();
 extern int save_levels();
 extern void send_irctoo_chatops(char *pattern, ...);
+extern char *sha256crypt(char *txt); /* from sha256.c */
 extern char *irctoo_umodes(aClient *cptr);

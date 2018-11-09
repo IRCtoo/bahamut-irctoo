@@ -1119,6 +1119,11 @@ confadd_options(cVar *vars[], int lnum)
             tmp->type = NULL;
             new_confopts |= FLAGS_SMOTD;
         }
+        else if(tmp->type && (tmp->type->flag & OPTF_SHA256PASS))
+        {
+            tmp->type = NULL;
+            new_confopts |= FLAGS_SHA256PASS;
+        }
         else if(tmp->type && (tmp->type->flag & OPTF_CRYPTPASS))
         {
             tmp->type = NULL;

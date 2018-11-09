@@ -10,6 +10,7 @@ extern char *getpass();
 extern char *crypt();
 /* extern long random(); */
 /* extern int srandom(unsigned); */
+extern char *sha256crypt(char *txt); /* from sha256.c */
 
 int main(argc, argv)
 int argc;
@@ -36,6 +37,7 @@ char *argv[];
   plaintext = getpass("plaintext: ");
 
   printf("%s\n", crypt(plaintext, salt));
+  printf("sha256: %s\n", sha256crypt(plaintext));
   return 0;
 }
 

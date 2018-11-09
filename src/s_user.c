@@ -407,7 +407,14 @@ check_oper_can_mask(aClient *sptr, char *name, char *password, char **onick)
 
     /* use first two chars of the password they send in as salt */
     /* passwd may be NULL pointer. Head it off at the pass... */
-    if(confopts & FLAGS_CRYPTPASS)
+    if(confopts & FLAGS_SHA256PASS)
+    {
+        if (password && *aoper->passwd)
+            encr = sha256crypt(password);
+        else
+            encr = "";
+    }
+    else if(confopts & FLAGS_CRYPTPASS)
     {
         if (password && *aoper->passwd)
             encr = crypt(password, aoper->passwd);
@@ -3049,7 +3056,14 @@ int m_oper(aClient *cptr, aClient *sptr, int parc, char *parv[])
 #endif
     /* use first two chars of the password they send in as salt */
     /* passwd may be NULL pointer. Head it off at the pass... */
-    if(confopts & FLAGS_CRYPTPASS)
+    if(confopts & FLAGS_SHA256PASS)
+    {
+        if (password && *aoper->passwd)
+                encr = sha256crypt(password);
+        else
+                encr = "";
+    }
+    else if(confopts & FLAGS_CRYPTPASS)
     {
         if (password && *aoper->passwd)
                 encr = crypt(password, aoper->passwd);

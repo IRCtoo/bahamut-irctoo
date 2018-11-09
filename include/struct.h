@@ -701,6 +701,7 @@ typedef struct Whowas
 #define FLAGS_SHOWLINKS 0x0040
 #define FLAGS_SPLITOPOK 0x0080
 #define FLAGS_REMREHOK  0x0100
+#define FLAGS_SHA256PASS 0x0200
 
 
 /* flags for connects */

@@ -12,7 +12,7 @@ CPPFLAGS=@CPPFLAGS@ -I../include
 LDFLAGS=@LDFLAGS@
 
 mkpasswd_SOURCES = mkpasswd.c
-mkpasswd_OBJECTS = mkpasswd.o
+mkpasswd_OBJECTS = mkpasswd.o ../src/sha256.o
 PROGRAMS = mkpasswd
 
 all_OBJECTS = $(mkpasswd_OBJECTS)
