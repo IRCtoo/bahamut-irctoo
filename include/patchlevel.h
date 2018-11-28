@@ -24,6 +24,6 @@
 #define MINOR 1
 #define PATCH 4
 
-#define PATCHES "+irctoo-r10"
+#define PATCHES "irctoo-r11"
 
 #endif
